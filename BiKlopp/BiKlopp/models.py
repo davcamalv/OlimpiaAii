@@ -33,7 +33,7 @@ class Mercado(models.Model):
     ultima_fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.id_mercado
+        return str(self.id_mercado)
 
     class Meta:
         ordering = ('id_mercado',)
@@ -52,9 +52,9 @@ class Jugador(models.Model):
     goles = models.PositiveIntegerField()
     tarjetas = models.PositiveIntegerField()
     media_puntos = models.FloatField()
-    id_equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
-    id_mi_equipo = models.ForeignKey(MiEquipo, on_delete=models.CASCADE)
-    id_mercado = models.ForeignKey(Mercado, on_delete=models.CASCADE)
+    id_equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, blank=True, null=True)
+    id_mi_equipo = models.ForeignKey(MiEquipo, on_delete=models.CASCADE, blank=True, null=True)
+    id_mercado = models.ForeignKey(Mercado, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.nombre

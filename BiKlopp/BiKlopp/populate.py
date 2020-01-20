@@ -32,21 +32,19 @@ def popular_jugadores_mercado(usuario, contrasena):
     #Espera para completar el logeo y poder acceder al mercado
     time.sleep(2)
 
-    lista_jugadores = []
     driver.get('https://biwenger.as.com/market')
 
     #Espera para cargar el mercado y poder acceder a los jugadores
     time.sleep(2)
    
     mercado = Mercado.objects.create()
-    id_mercado = mercado.id_mercado
     i = 0
     jugadores = driver.find_elements_by_tag_name("player-card")
     urls = []
     for jugador in jugadores:
         urls.append(str(jugador.find_element_by_class_name("content").find_element_by_class_name("main").find_element_by_tag_name("h3").find_element_by_tag_name("a").get_attribute("href")))
 
-    while i < len(urls):
+    while i < 1:
 
         url = urls[i]
 
@@ -67,11 +65,11 @@ def popular_jugadores_mercado(usuario, contrasena):
                 puntos.append(punto["title"])
             except:
                 puntos.append(punto.getText())
-        equipo = page.find('team-link').find("a")
-        nombre_equipo = equipo["title"]
-        foto_equipo = equipo.find("img")["src"]
-        url_equipo = "https://biwenger.as.com" + str(equipo["href"])
-        driver.get(url_equipo)
+        url_equipo = page.find('team-link').find("a")
+        nombre_equipo = url_equipo["title"]
+        foto_equipo = url_equipo.find("img")["src"]
+        url_completa_equipo = "https://biwenger.as.com" + str(url_equipo["href"])
+        driver.get(url_completa_equipo)
         #Espera para cargar el equipo y poder extraer los datos
         time.sleep(2)
         estadisticas = page.find("div",{"class": "stats"}).findAll("div", {"class": "row"})
@@ -79,14 +77,14 @@ def popular_jugadores_mercado(usuario, contrasena):
         derrotas_equipo = estadisticas[1].findAll("span")[1].getText()
 
         try:
-            equipo_bd = get_object(Jugador, nombre=nombre)
+            equipo_bd = Equipo.objects.get(nombre=nombre)
             equipo_bd.update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=puntos_totales, valor_mercado=valor, partidos_jugados=partidos_jugados, goles=goles, tarjetas=tarjetas, media_puntos=media_puntos, id_equipo=id_equipo, id_mi_equipo=id_mi_equipo, id_mercado=id_mercado)
             equipo_bd.save()
-            id_equipo = equipo_bd.id_equipo
+            equipo = equipo_bd
         except ObjectDoesNotExist:
-            nuevo_Equipo(nombre=nombre_equipo,foto=foto_equipo, victorias=victorias_equipo, derrotas=derrotas_equipo)
+            nuevo_Equipo = Equipo(nombre=nombre_equipo,foto=foto_equipo, victorias=victorias_equipo, derrotas=derrotas_equipo)
             nuevo_Equipo.save()
-            id_equipo = nuevo_Equipo.id_equipo
+            equipo = nuevo_Equipo
 
         driver.get(url)
 
@@ -102,14 +100,14 @@ def popular_jugadores_mercado(usuario, contrasena):
         
 
         try:
-            jugador_bd = get_object(Jugador, nombre=nombre)
-            jugador_bd.update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=puntos_totales, valor_mercado=valor, partidos_jugados=partidos_jugados, goles=goles, tarjetas=tarjetas, media_puntos=media_puntos, id_equipo=id_equipo, id_mercado=id_mercado)
+            jugador_bd = Jugador.objects.get(nombre=nombre)
+            jugador_bd.update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=puntos_totales, valor_mercado=valor, partidos_jugados=partidos_jugados, goles=goles, tarjetas=tarjetas, media_puntos=media_puntos, id_equipo=equipo, id_mercado=mercado)
             jugador_bd.save()
         except ObjectDoesNotExist:
-            lista_jugadores.append(Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=puntos_totales, valor_mercado=valor, partidos_jugados=partidos_jugados, goles=goles, tarjetas=tarjetas, media_puntos=media_puntos, id_equipo=id_equipo, id_mercado=id_mercado))
-       
+            nuevo_jugador = Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=puntos_totales, valor_mercado=valor, partidos_jugados=partidos_jugados, goles=goles, tarjetas=tarjetas, media_puntos=media_puntos, id_equipo=equipo, id_mercado=mercado)
+            nuevo_jugador.save()
+           
         i = i + 1
 
-    Jugador.objects.bulk_create(lista_jugadores)        
     driver.quit()
 
