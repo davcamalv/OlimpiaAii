@@ -1,5 +1,5 @@
 BiKlopp/.idea
-BiKlopp/src/__pycache__
-BiKlopp/src/__init__.py
-BiKlopp/src/wsgi.py
+BiKlopp/BiKlopp/__pycache__
+BiKlopp/BiKlopp/__init__.py
+BiKlopp/BiKlopp/wsgi.py
 BiKlopp/db.sqlite3
