@@ -16,32 +16,6 @@ class Equipo(models.Model):
     class Meta:
         ordering = ('nombre',)
 
-class Jugador(models.Model):
-    id_jugador = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=50)
-    foto = models.URLField()
-    POSICIONES = (('PT', 'Portero'), ('DF', 'Defensa'), ('MC', 'Mediocentro'), ('DL', 'Delantero'))
-    posicion = models.CharField(choices=POSICIONES)
-    forma = models.CharField(max_length=50)
-    ultimos_puntos = models.TextField(max_length=200)
-    puntos_totales = models.IntegerField()
-    valor_mercado = models.IntegerField(MinValueValidator=150000)
-    partidos_jugados = models.PositiveIntegerField()
-    goles = models.PositiveIntegerField()
-    tarjetas = models.PositiveIntegerField()
-    media_puntos = models.FloatField()
-    id_equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
-    id_mi_equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
-    id_mercado = models.ForeignKey(Equipo, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.nombre
-
-    class Meta:
-        ordering = ('nombre',)
-
-
-
 class MiEquipo(models.Model):
     id_mi_equipo = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50)
@@ -63,5 +37,32 @@ class Mercado(models.Model):
 
     class Meta:
         ordering = ('id_mercado',)
+
+class Jugador(models.Model):
+    id_jugador = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50)
+    foto = models.URLField()
+    POSICIONES = (('PT', 'Portero'), ('DF', 'Defensa'), ('MC', 'Mediocentro'), ('DL', 'Delantero'))
+    posicion = models.CharField(choices=POSICIONES, max_length=50)
+    forma = models.CharField(max_length=50)
+    ultimos_puntos = models.TextField(max_length=200)
+    puntos_totales = models.IntegerField()
+    valor_mercado = models.IntegerField(validators=[MinValueValidator(150000)])
+    partidos_jugados = models.PositiveIntegerField()
+    goles = models.PositiveIntegerField()
+    tarjetas = models.PositiveIntegerField()
+    media_puntos = models.FloatField()
+    id_equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
+    id_mi_equipo = models.ForeignKey(MiEquipo, on_delete=models.CASCADE)
+    id_mercado = models.ForeignKey(Mercado, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        ordering = ('nombre',)
+
+
+
 
 
