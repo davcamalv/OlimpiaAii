@@ -69,42 +69,36 @@ def popular_jugadores_mercado(usuario, contrasena):
         nombre_equipo = url_equipo["title"]
         foto_equipo = url_equipo.find("img")["src"]
         url_completa_equipo = "https://biwenger.as.com" + str(url_equipo["href"])
+    
+        estadisticas = page.find("div",{"class": "stats"}).findAll("div", {"class": "row"})
+        puntos_totales = estadisticas[0].find("div", {"class": "stat main"}).find("span").getText()
+        valor = estadisticas[2].find("div", {"class": "stat main"}).find("span", {"itemprop": "netWorth"}).getText().replace(".", "")
+        partidos_jugados =  estadisticas[4].find("div", {"class": "stat main"}).find("span").getText().replace(".", "")
+        goles = estadisticas[5].findAll("span")[0].getText().replace(".", "")
+        tarjetas = estadisticas[5].findAll("span")[1].getText().replace(".", "")
+        media_puntos =  estadisticas[6].find("div", {"class": "stat main"}).find("span").getText().replace(",", ".")
+        
         driver.get(url_completa_equipo)
         #Espera para cargar el equipo y poder extraer los datos
         time.sleep(2)
+        page = BeautifulSoup(driver.page_source, "html5lib")
+
         estadisticas = page.find("div",{"class": "stats"}).findAll("div", {"class": "row"})
-        victorias_equipo = estadisticas[1].findAll("span")[0].getText()
-        derrotas_equipo = estadisticas[1].findAll("span")[1].getText()
+        victorias_equipo = estadisticas[1].findAll("span")[0].getText().replace(".", "")
+        derrotas_equipo = estadisticas[1].findAll("span")[1].getText().replace(".", "")
 
         try:
-            equipo_bd = Equipo.objects.get(nombre=nombre)
-            equipo_bd.update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=puntos_totales, valor_mercado=valor, partidos_jugados=partidos_jugados, goles=goles, tarjetas=tarjetas, media_puntos=media_puntos, id_equipo=id_equipo, id_mi_equipo=id_mi_equipo, id_mercado=id_mercado)
-            equipo_bd.save()
+            Equipo.objects.filter(nombre=nombre_equipo).update(nombre=nombre_equipo,foto=foto_equipo, victorias=victorias_equipo, derrotas=derrotas_equipo)
             equipo = equipo_bd
         except ObjectDoesNotExist:
             nuevo_Equipo = Equipo(nombre=nombre_equipo,foto=foto_equipo, victorias=victorias_equipo, derrotas=derrotas_equipo)
             nuevo_Equipo.save()
             equipo = nuevo_Equipo
 
-        driver.get(url)
-
-        #Espera para cargar el jugador y poder extraer los datos
-        time.sleep(2) 
-        estadisticas = page.find("div",{"class": "stats"}).findAll("div", {"class": "row"})
-        puntos_totales = estadisticas[0].find("div", {"class": "stat main"}).find("span").getText()
-        valor = estadisticas[2].find("div", {"class": "stat main"}).find("span", {"itemprop": "netWorth"}).getText()
-        partidos_jugados =  estadisticas[4].find("div", {"class": "stat main"}).find("span").getText()
-        goles = estadisticas[5].findAll("span")[0].getText()
-        tarjetas = estadisticas[5].findAll("span")[1].getText()
-        media_puntos =  estadisticas[6].find("div", {"class": "stat main"}).find("span").getText()
-        
-
         try:
-            jugador_bd = Jugador.objects.get(nombre=nombre)
-            jugador_bd.update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=puntos_totales, valor_mercado=valor, partidos_jugados=partidos_jugados, goles=goles, tarjetas=tarjetas, media_puntos=media_puntos, id_equipo=equipo, id_mercado=mercado)
-            jugador_bd.save()
+            Jugador.objects.filter(nombre=nombre)[0].update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, id_mercado=mercado)
         except ObjectDoesNotExist:
-            nuevo_jugador = Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=puntos_totales, valor_mercado=valor, partidos_jugados=partidos_jugados, goles=goles, tarjetas=tarjetas, media_puntos=media_puntos, id_equipo=equipo, id_mercado=mercado)
+            nuevo_jugador = Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, id_mercado=mercado)
             nuevo_jugador.save()
            
         i = i + 1
