@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import re
 import os
 from django.core.exceptions import ObjectDoesNotExist
-from BiKlopp.models import Equipo, Jugador, Mercado, MiEquipo
+from BiKlopp.models import Equipo, Jugador, Mercado
 from django.conf import settings
 options = Options()
 options.add_argument('--headless')
