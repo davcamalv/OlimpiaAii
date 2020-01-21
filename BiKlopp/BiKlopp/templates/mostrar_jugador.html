@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block content %}
+
+        <div class="card text-center card-biklopp">
+            <img class="card-img-top" src="{{jugador.foto}}" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">{{jugador.nombre}}</h5>
+                <hr>
+                <p class="card-text">Recomendado en un 100%</p>
+                <p class="card-text">{{jugador.forma}}</p>
+                <p class="card-text">{{jugador.posicion}}</p>
+                <hr>
+                <p class="card-text">{{jugador.media_puntos}} puntos/partidos</p>
+                <p class="card-text">Goles: {{jugador.goles}}</p>
+                <p class="card-text">Tarjetas: {{jugador.tarjetas}}</p>
+                <hr>
+                <p class="card-text">{{jugador.valor_mercado}} €</p>
+            </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+              <h5 class="card-title">Noticias</h5>
+              <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Por Jugador</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Por Equipo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Por Jugador y Equipo</a>
+                </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                  <div class="card card-notice">
+                    <img class="card-img-top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf_-k6IGCEsFuehZq3kiHT6OdCFd8yYQXgmZaabW4idZaVIEP1ghC9E94g2-vpfdUE5fXvo6E&s" alt="Card image cap">
+                    <div class="card-body card-notice-body">
+                      <h5 class="card-title">Noticia 1</h5>
+                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    </div>
+                  </div>
+            </div>
+        </div>
+
+    <style>
+        .card-biklopp{
+            float: left;
+            width: 25%;
+            display: flex;
+            align-items: center;
+            margin-right: 5%;
+        }
+
+        .card-biklopp > .card-img-top{
+            width: 70%;
+            border-radius: 150px;
+            margin-top: 20px;
+            border: 2px solid lightgray;
+            background-color: #edf0f5;
+        }
+
+        .card-biklopp > .card-title{
+            text-align: center;
+        }
+        .card-biklopp > .card-text{
+            text-align: center;
+        }
+
+        .card-notice{
+            flex-direction: row;
+        }
+
+        .card-notice > .card-img-top{
+            float: left;
+            width: 25%;
+        }
+
+        .card-notice-body{
+            float: right;
+
+        }
+
+
+
+    </style>
+
+{% endblock content %}
