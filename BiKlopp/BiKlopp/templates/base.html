@@ -1,0 +1,48 @@
+{% load i18n static %}
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>BiKlopp</title>
+    <link rel="stylesheet" href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <a class="navbar-brand" href="/">BiKlopp</a>
+
+          <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"> <a class="nav-link" href="/">Inicio</a></li>
+            </ul>
+          </div>
+        </nav>
+    </header>
+
+    <main role="main" class="inner cover">
+        <div class="middle-center">
+          {% block content %}
+          {% endblock %}
+        </div>
+    </main>
+
+    <footer>
+    </footer>
+
+</body>
+
+<style>
+
+    .middle-center {
+        float: left;
+        width: 100%;
+        padding: 4% 15%;
+  }
+
+</style>
+
+
+</html>
