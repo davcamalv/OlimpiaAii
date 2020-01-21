@@ -21,4 +21,5 @@ urlpatterns = [
     path('', views.index),
     path('recomendar/', views.recomendar),
     path('popular-jugadores-mercado/', views.popularJugadoresMercado),
+    path('popular-noticias/', views.popular_noticias),
 ]

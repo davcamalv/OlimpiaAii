@@ -1,11 +1,15 @@
-from BiKlopp.populate import popular_jugadores_mercado
+from BiKlopp.populate import popular_jugadores_mercado, populate_news
 from BiKlopp.models import Equipo, Jugador, Mercado
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
+from BiKlopp.news import filter_by_player_and_team, filter_by_team, filter_by_player_or_team
 
 def popularJugadoresMercado(request):
     popular_jugadores_mercado("dcamalv@gmail.com", "contraseña")
     return HttpResponseRedirect('/admin/')
+
+def popular_noticias(request):
+    populate_news()
 
 def index(request):
     return render(request, "index.html")
