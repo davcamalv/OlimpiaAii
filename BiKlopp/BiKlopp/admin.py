@@ -1,4 +1,4 @@
-from BiKlopp.models import Equipo, Jugador, Mercado
+from BiKlopp.models import Equipo, Jugador, Mercado, MiEquipo
 from django.contrib import admin
 
 admin.site.register(Equipo)
