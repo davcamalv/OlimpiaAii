@@ -3,6 +3,26 @@
 
 {% block content %}
 
-    <h4
+    <h4>Bienvenido</h4>
+
+    <form method="post" action="recomendar/">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="exampleInputEmail1">Email de Biwenger</label>
+            <input name="correo" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="quiquesetien@hotmail.com">
+            <small id="emailHelp" class="form-text text-muted">Nunca vamos a compartir estos datos</small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Contraseña de Biwenger</label>
+            <input name="contrasenya" type="password" class="form-control" id="exampleInputPassword1" placeholder="Contraseña">
+        </div>
+        <div class="form-check">
+            <input name="actualizar_info" type="checkbox" class="form-check-input" id="exampleCheck1">
+            <label class="form-check-label" for="exampleCheck1">¿Quieres actualizar toda la información?</label>
+            <small id="emailHelp" class="form-text text-muted">Esto puede llevar unos segundos más</small>
+            <br>
+        </div>
+        <button type="submit" class="btn btn-primary">Recomiendame!</button>
+    </form>
 
 {% endblock content %}

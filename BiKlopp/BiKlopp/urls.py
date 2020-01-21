@@ -18,5 +18,7 @@ from django.urls import path
 from BiKlopp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.index),
+    path('recomendar/', views.recomendar),
     path('popular-jugadores-mercado/', views.popularJugadoresMercado),
 ]
