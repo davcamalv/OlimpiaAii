@@ -48,7 +48,7 @@ def popular_jugadores_mercado(usuario, contrasena):
             jugador.find_element_by_class_name("content").find_element_by_class_name("main").find_element_by_tag_name(
                 "h3").find_element_by_tag_name("a").get_attribute("href")))
 
-    while i < 1:
+    while i < len(urls):
 
         url = urls[i]
 
@@ -91,18 +91,19 @@ def popular_jugadores_mercado(usuario, contrasena):
         victorias_equipo = estadisticas[1].findAll("span")[0].getText().replace(".", "")
         derrotas_equipo = estadisticas[1].findAll("span")[1].getText().replace(".", "")
 
-        try:
-            Equipo.objects.filter(nombre=nombre_equipo).update(nombre=nombre_equipo,foto=foto_equipo, victorias=victorias_equipo, derrotas=derrotas_equipo)
-            equipo = equipo_bd
-        except ObjectDoesNotExist:
-            nuevo_Equipo = Equipo(nombre=nombre_equipo, foto=foto_equipo, victorias=victorias_equipo,
-                                  derrotas=derrotas_equipo)
-            nuevo_Equipo.save()
-            equipo = nuevo_Equipo
+        equipos_bd = Equipo.objects.filter(nombre=nombre_equipo)
+        if len(equipos_bd) > 0:
+            Equipo.objects.filter(pk=equipos_bd[0].pk).update(nombre=nombre_equipo,foto=foto_equipo, victorias=victorias_equipo, derrotas=derrotas_equipo)
+            equipo = Equipo.objects.get(pk=equipos_bd[0].pk)
+        else:
+            nuevo_equipo = Equipo(nombre=nombre_equipo, foto=foto_equipo, victorias=victorias_equipo, derrotas=derrotas_equipo)
+            nuevo_equipo.save()
+            equipo = nuevo_equipo
 
-        try:
-            Jugador.objects.filter(nombre=nombre)[0].update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, id_mercado=mercado)
-        except ObjectDoesNotExist:
+        jugadores_bd =  Jugador.objects.filter(nombre=nombre)
+        if len(jugadores_bd) > 0:
+           Jugador.objects.filter(pk=jugadores_bd[0].pk).update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, id_mercado=mercado)
+        else:
             nuevo_jugador = Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, id_mercado=mercado)
             nuevo_jugador.save()
 
