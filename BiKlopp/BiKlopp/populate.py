@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import re
 import os
 from django.core.exceptions import ObjectDoesNotExist
-from BiKlopp.models import Equipo, Jugador, Mercado
+from BiKlopp.models import Equipo, Jugador, Mercado, MiEquipo
 from django.conf import settings
 
 from urllib.parse import quote_plus
@@ -23,8 +23,54 @@ options = Options()
 options.add_argument('--headless')
 options.add_argument('--disable-gpu')
 
-
 def popular_jugadores_mercado(usuario, contrasena):
+    driver = login(usuario,contrasena)
+
+    driver.get('https://biwenger.as.com/market')
+
+    # Espera para cargar el mercado y poder acceder a los jugadores
+    time.sleep(2)
+
+    jugadores = popular_jugadores(driver)
+    
+    mercados = Mercado.objects.all()
+    if len(mercados) > 0:
+        Mercado.objects.filter(pk=mercados[0].pk).update()
+        mercado = Mercado.objects.filter(pk=mercados[0].pk)
+    else:
+        mercado = Mercado()
+        mercado.save()   
+    
+    for jugador in jugadores:
+        Jugador.objects.filter(pk=jugador.pk).update(id_mercado=mercado)
+
+    driver.quit()
+
+def popular_jugadores_mi_equipo(usuario, contrasena):
+    driver = login(usuario,contrasena)
+
+    driver.get('https://biwenger.as.com/team')
+    # Espera para cargar el mercado y poder acceder a los jugadores
+    time.sleep(2)
+
+    nombre_mi_equipo = driver.find_element_by_tag_name("user-link").find_element_by_tag_name("a").text
+
+    mis_equipos = MiEquipo.objects.filter(nombre=nombre_mi_equipo)
+    if len(mis_equipos) > 0:
+        MiEquipo.objects.filter(pk=mis_equipos[0].pk).update(nombre=nombre_mi_equipo)
+        mi_equipo = MiEquipo.objects.filter(pk=mis_equipos[0].pk)[0]
+    else:
+        mi_equipo = MiEquipo(nombre=nombre_mi_equipo)
+        mi_equipo.save()   
+
+    jugadores = popular_jugadores(driver)
+    
+    for jugador in jugadores:
+        Jugador.objects.filter(pk=jugador.pk).update(id_mi_equipo=mi_equipo)
+
+    driver.quit()
+    
+def login(usuario, contrasena):
     path = os.getcwd()
     url = os.path.join(path, "BiKlopp/resources/chromedriver.exe").replace("\\", "/")
 
@@ -44,13 +90,11 @@ def popular_jugadores_mercado(usuario, contrasena):
     # Espera para completar el logeo y poder acceder al mercado
     time.sleep(2)
 
-    driver.get('https://biwenger.as.com/market')
+    return driver
 
-    # Espera para cargar el mercado y poder acceder a los jugadores
-    time.sleep(2)
-
-    mercado = Mercado.objects.create()
+def popular_jugadores(driver):
     i = 0
+    lista_jugadores = []
     jugadores = driver.find_elements_by_tag_name("player-card")
     urls = []
     for jugador in jugadores:
@@ -70,6 +114,7 @@ def popular_jugadores_mercado(usuario, contrasena):
         page = BeautifulSoup(driver.page_source, "html5lib")
 
         nombre = page.find("h1", {"itemprop": "name"}).getText()
+
         foto = page.find("img", {"itemprop": "image"})["src"]
         forma_fisica = page.find('player-status')["title"]
         posicion = page.find('player-position').getText()
@@ -104,7 +149,7 @@ def popular_jugadores_mercado(usuario, contrasena):
         equipos_bd = Equipo.objects.filter(nombre=nombre_equipo)
         if len(equipos_bd) > 0:
             Equipo.objects.filter(pk=equipos_bd[0].pk).update(nombre=nombre_equipo,foto=foto_equipo, victorias=victorias_equipo, derrotas=derrotas_equipo)
-            equipo = Equipo.objects.get(pk=equipos_bd[0].pk)
+            equipo = Equipo.objects.get(pk=equipos_bd[0].pk)[0]
         else:
             nuevo_equipo = Equipo(nombre=nombre_equipo, foto=foto_equipo, victorias=victorias_equipo, derrotas=derrotas_equipo)
             nuevo_equipo.save()
@@ -112,15 +157,15 @@ def popular_jugadores_mercado(usuario, contrasena):
 
         jugadores_bd =  Jugador.objects.filter(nombre=nombre)
         if len(jugadores_bd) > 0:
-           Jugador.objects.filter(pk=jugadores_bd[0].pk).update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, id_mercado=mercado)
+           Jugador.objects.filter(pk=jugadores_bd[0].pk).update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo)
+           lista_jugadores.append(Jugador.objects.get(pk=jugadores_bd[0].pk)[0])
         else:
-            nuevo_jugador = Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, id_mercado=mercado)
+            nuevo_jugador = Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo)
             nuevo_jugador.save()
+            lista_jugadores.append(nuevo_jugador)
 
         i = i + 1
-
-    driver.quit()
-
+    return lista_jugadores
 
 def populate_news():
     #jugadores = Jugador.objects.all()
