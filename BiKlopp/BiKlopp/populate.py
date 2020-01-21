@@ -125,11 +125,11 @@ def popular_jugadores_mercado(usuario, contrasena):
     driver.quit()
 
 
-def populate_noticias():
+def populate_news():
     #jugadores = Jugador.objects.all()
     #for jugador in jugadores:
 
-    url_noticias = "https://www.google.com/search?q=" + quote_plus("Joaquin Sánchez")+ "+" + quote_plus("Betis") + "&tbm=nws&source=lnms"
+    url_noticias = "https://www.google.es/search?q=" + quote_plus("Joaquin Sánchez")+ "+" + quote_plus("Betis") + "&tbm=nws&source=lnms"
     path = os.getcwd()
     dir_exe = os.path.join(path, "BiKlopp/resources/chromedriver.exe").replace("\\","/")
    
@@ -139,17 +139,16 @@ def populate_noticias():
     time.sleep(2)
     html_page_noticias = BeautifulSoup(driver.page_source,"html5lib")
     
-    html_archivo = open(os.path.join(path, "BiKlopp/resources/noticias_google.html").replace("\\","/"), "r", encoding="utf-8").read()
-    html_page_noticias = BeautifulSoup(html_archivo,"html5lib")
+    # html_archivo = open(os.path.join(path, "BiKlopp/resources/noticias_google.html").replace("\\","/"), "r").read()
+    # html_page_noticias = BeautifulSoup(html_archivo,"html5lib")
     noticias_html = html_page_noticias.find_all("div", {"class" : "gG0TJc"})
 
     mini_noticias_html = html_page_noticias.find_all("div", {"class" : "YiHbdc"})
 
-    schema_noticias = Schema(titulo=TEXT(stored=True), link=TEXT(stored=True), periodico=TEXT(stored=True), fecha=DATETIME(stored=True))
+    schema_noticias = Schema(titulo=TEXT(stored=True), link=TEXT(stored=True), periodico=TEXT(stored=True), desc=TEXT(stored=True), fecha=DATETIME(stored=True, sortable=True))
 
     if not os.path.isdir("Index_news"):
         os.mkdir("Index_news")
-
     ix = create_in("Index_news", schema=schema_noticias)
     with ix.writer() as writer_noticias:
         i = 0
@@ -159,8 +158,10 @@ def populate_noticias():
             periodico = noticia_html.find("span", {"class": "xQ82C"}).get_text()
             fecha_html = noticia_html.find("span", {"class": "fwzPFf"}).get_text()
             fecha = dateparser.parse(fecha_html)
+            desc=noticia_html.find("div", {"class": "st"}).get_text()
+            print(desc)
 
-            writer_noticias.add_document(titulo=str(titulo),link=str(link), periodico=str(periodico), fecha=fecha)
+            writer_noticias.add_document(titulo=str(titulo),link=str(link), periodico=str(periodico), desc=str(desc), fecha=fecha)
 
             i = i + 1
 
@@ -170,12 +171,9 @@ def populate_noticias():
             periodico = mini_noticia_html.find("span", {"class": "xQ82C"}).get_text()
             fecha_html = mini_noticia_html.find("span", {"class": "fwzPFf"}).get_text()
             fecha = dateparser.parse(fecha_html)
-            print(fecha)
 
-            writer_noticias.add_document(titulo=str(titulo),link=str(link), periodico=str(periodico), fecha=fecha)
+            writer_noticias.add_document(titulo=str(titulo),link=str(link), periodico=str(periodico),desc=None, fecha=fecha)
 
             i = i + 1
 
-
-
-    return i
+    driver.quit()
