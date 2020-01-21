@@ -19,4 +19,5 @@ from BiKlopp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('popular-jugadores-mercado/', views.popularJugadoresMercado),
+    path('popular-noticias/', views.popular_noticias),
 ]
