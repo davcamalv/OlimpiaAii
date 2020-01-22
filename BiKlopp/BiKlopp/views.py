@@ -1,11 +1,9 @@
 from BiKlopp.populate import popular_jugadores_mercado, populate_news, popular_jugadores_mi_equipo
-from BiKlopp.models import Equipo, Jugador, Mercado
-from django.http import HttpResponseRedirect, HttpResponse
+from BiKlopp.models import Jugador, Mercado
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from BiKlopp.news import filter_by_player_and_team, filter_by_team, filter_by_player
-from datetime import datetime, date, time, timedelta
-import calendar
+from datetime import date,timedelta
 
 def index(request):
     return render(request, "index.html")
@@ -38,23 +36,8 @@ def recomendar(request):
 
 def mostrar_info_jugador(request, player_id):
     jugador = get_object_or_404(Jugador, pk=player_id)
-    populate_news()
-    noticias = filter_by_team()
-    for n in noticias:
-        print(n)
-    return render(request, "mostrar_jugador.html", {"jugador": jugador, "noticias":noticias})
-
-def news_filter_by_team(request, player_id):
-    jugador = get_object_or_404(Jugador, pk=player_id)
-    noticias = filter_by_team()
-    return render(request, "mostrar_jugador.html", {"jugador": jugador, "noticias": noticias})
-
-def news_filter_by_player(request, player_id):
-    jugador = get_object_or_404(Jugador, pk=player_id)
-    noticias = filter_by_player()
-    return render(request, "mostrar_jugador.html", {"jugador": jugador, "noticias": noticias})
-
-def news_filter_by_player_and_team(request, player_id):
-    jugador = get_object_or_404(Jugador, pk=player_id)
-    noticias = filter_by_player_and_team()
-    return render(request, "mostrar_jugador.html", {"jugador": jugador, "noticias": noticias})
+    populate_news(jugador.nombre, jugador.id_equipo.nombre)
+    noticias_player = filter_by_player(jugador.nombre)
+    noticias_team = filter_by_team(jugador.id_equipo.nombre)
+    noticias_player_and_team = filter_by_player_and_team(jugador.nombre, jugador.id_equipo.nombre)
+    return render(request, "mostrar_jugador.html", {"jugador": jugador, "noticias_player":noticias_player, "noticias_team":noticias_team, "noticias_player_and_team":noticias_player_and_team})

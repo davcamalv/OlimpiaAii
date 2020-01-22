@@ -25,32 +25,113 @@
               <h5 class="card-title">Noticias</h5>
               <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" href="news/filter_by_player">Por Jugador</a>
+                    <a id="link_noticias_jugador" class="nav-link active" href="#" onclick="cambiaAJugador();return false;">Por Jugador</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="news/filter_by_team">Por Equipo</a>
+                    <a id="link_noticias_equipo" class="nav-link" href="#" onclick="cambiaAEquipo();return false;">Por Equipo</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="news/filter_by_player_and_team">Por Jugador y Equipo</a>
+                    <a id="link_noticias_jugador_equipo" class="nav-link" href="#" onclick="cambiaAJugadorEquipo();return false;">Por Jugador y Equipo</a>
                 </li>
                 </ul>
             </div>
-            {%  for row in noticias %}
-            <div class="card-body">
-                  <div class="card card-notice">
-                    <!--<img class="card-img-top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf_-k6IGCEsFuehZq3kiHT6OdCFd8yYQXgmZaabW4idZaVIEP1ghC9E94g2-vpfdUE5fXvo6E&s" alt="Card image cap">-->
-                    <div class="card-body card-notice-body">
-                        <h5 class="card-title">{{row.titulo}}</h5>
-                        <p class="card-text">{{row.desc}}</p>
-                        <a class="card-link" href="{{row.link}}" target="_blank" >Link a la noticia en {{row.periodico}}</a>
-                        <footer style="float: right;" class="blockquote-footer"><cite title="Source Title">{{row.fecha}}</cite></footer>
-                    </div>
-                  </div>
-            </div>
+            <div id="noticias_jugador">
+            {%  for row in noticias_player %}
+                <div class="card-body">
+                      <div class="card card-notice">
+                        <!--<img class="card-img-top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf_-k6IGCEsFuehZq3kiHT6OdCFd8yYQXgmZaabW4idZaVIEP1ghC9E94g2-vpfdUE5fXvo6E&s" alt="Card image cap">-->
+                        <div class="card-body card-notice-body">
+                            <h5 class="card-title">{{row.titulo}}</h5>
+                            <p class="card-text">{{row.desc}}</p>
+                            <a class="card-link" href="{{row.link}}" target="_blank" >Link a la noticia en {{row.periodico}}</a>
+                            <footer style="float: right;" class="blockquote-footer"><cite title="Source Title">{{row.fecha}}</cite></footer>
+                        </div>
+                      </div>
+                </div>
             {% endfor %}
+            </div>
+            <div id="noticias_equipo">
+            {%  for row in noticias_team %}
+                <div class="card-body">
+                      <div class="card card-notice">
+                        <!--<img class="card-img-top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf_-k6IGCEsFuehZq3kiHT6OdCFd8yYQXgmZaabW4idZaVIEP1ghC9E94g2-vpfdUE5fXvo6E&s" alt="Card image cap">-->
+                        <div class="card-body card-notice-body">
+                            <h5 class="card-title">{{row.titulo}}</h5>
+                            <p class="card-text">{{row.desc}}</p>
+                            <a class="card-link" href="{{row.link}}" target="_blank" >Link a la noticia en {{row.periodico}}</a>
+                            <footer style="float: right;" class="blockquote-footer"><cite title="Source Title">{{row.fecha}}</cite></footer>
+                        </div>
+                      </div>
+                </div>
+            {% endfor %}
+            </div>
+            <div id="noticias_jugador_equipo">
+            {%  for row in noticias_player_and_team %}
+                <div class="card-body">
+                      <div class="card card-notice">
+                        <!--<img class="card-img-top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf_-k6IGCEsFuehZq3kiHT6OdCFd8yYQXgmZaabW4idZaVIEP1ghC9E94g2-vpfdUE5fXvo6E&s" alt="Card image cap">-->
+                        <div class="card-body card-notice-body">
+                            <h5 class="card-title">{{row.titulo}}</h5>
+                            <p class="card-text">{{row.desc}}</p>
+                            <a class="card-link" href="{{row.link}}" target="_blank" >Link a la noticia en {{row.periodico}}</a>
+                            <footer style="float: right;" class="blockquote-footer"><cite title="Source Title">{{row.fecha}}</cite></footer>
+                        </div>
+                      </div>
+                </div>
+            {% endfor %}
+            </div>
         </div>
 
+    <script>
+
+        function cambiaAJugador() {
+            document.getElementById("noticias_jugador").style.display = "block";
+            document.getElementById("noticias_equipo").style.display = "none";
+            document.getElementById("noticias_jugador_equipo").style.display = "none";
+
+            document.getElementById("link_noticias_jugador").className = "nav-link active";
+            document.getElementById("link_noticias_equipo").className = "nav-link";
+            document.getElementById("link_noticias_jugador_equipo").className = "nav-link";
+        }
+
+        function cambiaAEquipo() {
+            document.getElementById("noticias_jugador").style.display = "none";
+            document.getElementById("noticias_equipo").style.display = "block";
+            document.getElementById("noticias_jugador_equipo").style.display = "none";
+
+            document.getElementById("link_noticias_jugador").className = "nav-link";
+            document.getElementById("link_noticias_equipo").className = "nav-link active";
+            document.getElementById("link_noticias_jugador_equipo").className = "nav-link";
+        }
+
+        function cambiaAJugadorEquipo() {
+            document.getElementById("noticias_jugador").style.display = "none";
+            document.getElementById("noticias_equipo").style.display = "none";
+            document.getElementById("noticias_jugador_equipo").style.display = "block";
+
+            document.getElementById("link_noticias_jugador").className = "nav-link";
+            document.getElementById("link_noticias_equipo").className = "nav-link";
+            document.getElementById("link_noticias_jugador_equipo").className = "nav-link active";
+        }
+
+
+    </script>
+
     <style>
+
+        #noticias_jugador_equipo{
+            display: none;
+        }
+
+        #noticias_equipo{
+            display: none;
+        }
+
+        #noticias_jugador{
+            display: block;
+        }
+
+
         .card-biklopp{
             float: left;
             width: 25%;

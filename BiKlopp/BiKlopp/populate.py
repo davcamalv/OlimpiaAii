@@ -1,22 +1,14 @@
-import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 from bs4 import BeautifulSoup
 import re
 import os
-from django.core.exceptions import ObjectDoesNotExist
 from BiKlopp.models import Equipo, Jugador, Mercado, MiEquipo
-from django.conf import settings
 
 from urllib.parse import quote_plus
-from whoosh.index import create_in,open_dir
-from whoosh.reading import IndexReader
+from whoosh.index import create_in
 from whoosh.fields import Schema, TEXT, DATETIME
-from whoosh.qparser import QueryParser
-from whoosh.qparser import MultifieldParser
-from whoosh import query
-from whoosh.query import And, Term
 import dateparser
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -175,18 +167,14 @@ def popular_jugadores(driver, alineacion=None):
         i = i + 1
     return lista_jugadores
 
-def populate_news():
-    #jugadores = Jugador.objects.all()
-    #for jugador in jugadores:
-
-    url_noticias = "https://www.google.es/search?q=" + quote_plus("Joaquin Sánchez")+ "+" + quote_plus("Betis") + "&tbm=nws&source=lnms"
+def populate_news(jugador, equipo):
+    url_noticias = "https://www.google.es/search?q=" + quote_plus(jugador)+ "+" + quote_plus(equipo) + "&tbm=nws&source=lnms"
     path = os.getcwd()
     dir_exe = os.path.join(path, "BiKlopp/resources/chromedriver.exe").replace("\\","/")
    
     driver = webdriver.Chrome(dir_exe, options=options)
 
     driver.get(url_noticias)
-    #time.sleep(3)
     html_page_noticias = BeautifulSoup(driver.page_source,"html5lib")
     
     # html_archivo = open(os.path.join(path, "BiKlopp/resources/noticias_google.html").replace("\\","/"), "r").read()
@@ -209,7 +197,6 @@ def populate_news():
             fecha_html = noticia_html.find("span", {"class": "fwzPFf"}).get_text()
             fecha = dateparser.parse(fecha_html)
             desc=noticia_html.find("div", {"class": "st"}).get_text()
-            print(desc)
 
             writer_noticias.add_document(titulo=str(titulo),link=str(link), periodico=str(periodico), desc=str(desc), fecha=fecha)
 
