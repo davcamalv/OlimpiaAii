@@ -25,4 +25,12 @@
         <button type="submit" class="btn btn-primary">Recomiendame!</button>
     </form>
 
+    <br>
+
+    {%if error%}
+        <div class="alert alert-danger" role="alert">
+            {{error}}
+        </div>
+    {% endif %}
+
 {% endblock content %}
