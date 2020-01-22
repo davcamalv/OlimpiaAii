@@ -10,8 +10,11 @@
         como se parecen a los de tu equipo y cuál te recomendamos fichar.
     </p>
     <br>
-
+    {%if error%}
+    <form method="post" action="" style="width: 50%; margin-left: 25%">
+    {% else %}
     <form method="post" action="recomendar/" style="width: 50%; margin-left: 25%">
+    {% endif %}
         {% csrf_token %}
         <div class="form-group">
             <label for="exampleInputEmail1">Email</label>
