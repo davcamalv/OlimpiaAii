@@ -8,7 +8,7 @@
             <div class="card-body">
                 <h5 class="card-title">{{jugador.nombre}}</h5>
                 <hr>
-                <p class="card-text">Recomendado en un 100%</p>
+                <p class="card-text">Recomendado en un {{jugador.porcentaje_similitud_ideal}}%</p>
                 <p class="card-text">{{jugador.forma}}</p>
                 <p class="card-text">{{jugador.posicion}}</p>
                 <hr>
@@ -16,7 +16,7 @@
                 <p class="card-text">Goles: {{jugador.goles}}</p>
                 <p class="card-text">Tarjetas: {{jugador.tarjetas}}</p>
                 <hr>
-                <p class="card-text">{{jugador.valor_mercado}} €</p>
+                <p class="card-text">VM: {{jugador.valor_mercado}} €</p>
             </div>
         </div>
 

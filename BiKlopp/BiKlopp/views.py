@@ -4,11 +4,13 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from BiKlopp.news import filter_by_player_and_team, filter_by_team, filter_by_player
-from datetime import date,timedelta
+from datetime import datetime,timedelta
 from scipy.stats.stats import pearsonr
+import pytz
 
 def index(request):
     return render(request, "index.html")
+
 
 def recomendar(request):
     correo = request.POST['correo']
@@ -21,7 +23,6 @@ def recomendar(request):
             return render(request, "index.html", {"error": "El usuario o la contraseña no son correctos"})
         popular_jugadores_mercado(driver)
         popular_jugadores_mi_equipo(driver)
-
     elif len(Mercado.objects.all()) == 0:
         try:
             driver = login(correo, contrasenya)
@@ -38,12 +39,13 @@ def recomendar(request):
             except:
                 return render(request, "index.html", {"error": "El usuario o la contraseña no son correctos"})
             popular_jugadores_mercado(driver)
-        
 
-    #TODO algoritmo_recomendacion()
-    jugadores = Jugador.objects.all() #Provisional: Se sustituyen por los jugadores recomendados
+    actualizar_recomendacion_plantilla()
+    mercado = Mercado.objects.get(pk=Mercado.objects.all()[0].pk)
+    jugadores = Jugador.objects.all().filter(id_mercado=mercado)
     #Todo solucionar lo de las URL
-    return render(request, "recomendados.html", {"jugadores": jugadores})
+    return render(request, "recomendados.html", {"jugadores": jugadores, "fecha":mercado.ultima_fecha_actualizacion})
+
 
 def mostrar_info_jugador(request, player_id):
     jugador = get_object_or_404(Jugador, pk=player_id)
@@ -56,9 +58,8 @@ def mostrar_info_jugador(request, player_id):
 
 def actualizar_recomendacion_plantilla():
     jugadores_alineacion = Jugador.objects.all().filter(alineacion=True)
-    jugadores_mercado = Jugador.objects.all().filter(alineacion=False)
-    print(jugadores_alineacion.count())
-    print(jugadores_mercado.count())
+    mercado = Mercado.objects.get(pk=Mercado.objects.all()[0].pk)
+    jugadores_mercado = Jugador.objects.all().filter(id_mercado = mercado)
     for jugador_mercado in jugadores_mercado:
         jugador = jugador_to_list(jugador_mercado)
         recomendados = []
@@ -66,14 +67,12 @@ def actualizar_recomendacion_plantilla():
             if jugador_alineacion.posicion == jugador_mercado.posicion:
                 similitud = pearsonr(jugador, jugador_to_list(jugador_alineacion))[0]
                 recomendados.append((jugador_alineacion.id_jugador, similitud))
-        print(recomendados)
-        mejor_similitud = max(recomendados, key= lambda pos: pos[1])
-        jugador_mercado.jugador_similiar = get_object_or_404(Jugador, pk=mejor_similitud[0])
-        jugador_mercado.porcentaje_similitud_jugador = mejor_similitud[1]
-        jugador_mercado.save()
-        print(jugador_mercado.juga)
-
-
+        if len(recomendados) != 0:
+            print(recomendados)
+            mejor_similitud = max(recomendados, key= lambda pos: pos[1])
+            jugador_mercado.jugador_similiar = get_object_or_404(Jugador, pk=mejor_similitud[0])
+            jugador_mercado.porcentaje_similitud_jugador = round(((mejor_similitud[1]+1)*100)/2,2)
+            jugador_mercado.save()
 
 
 def jugador_to_list(jugador_objeto):
@@ -85,9 +84,5 @@ def jugador_to_list(jugador_objeto):
         except:
             puntos.append(0)
     jugador.extend(puntos)
-    jugador.append(jugador_objeto.puntos_totales)
-    jugador.append(jugador_objeto.valor_mercado)
-    jugador.append(jugador_objeto.partidos_jugados)
-    jugador.append(jugador_objeto.goles)
     jugador.append(jugador_objeto.media_puntos)
     return jugador
