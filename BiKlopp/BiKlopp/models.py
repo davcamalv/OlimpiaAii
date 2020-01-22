@@ -1,5 +1,3 @@
-# encoding:utf-8
-
 from django.db import models
 from django.core.validators import MinValueValidator
 
@@ -26,7 +24,6 @@ class MiEquipo(models.Model):
 
     class Meta:
         ordering = ('nombre',)
-
 
 class Mercado(models.Model):
     id_mercado = models.AutoField(primary_key=True)

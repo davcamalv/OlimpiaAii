@@ -4,7 +4,7 @@
 {% block content %}
 
     <h3>Jugadores en tu mercado</h3>
-    <p>Última actualización: 12/12/2020 00:00:00</p>
+    <p>Última actualización: {{fecha}}</p>
 
     {% for row in jugadores %}
 
@@ -12,13 +12,19 @@
             <img class="card-img-top" src="{{row.foto}}" alt="Card image cap">
             <div class="card-body">
                 <div id="jugador-similar-{{row.pk}}" class="card jugador_similar">
-                    <img class="card-img-top" src="{{row.foto}}" alt="Card image cap">
-                    <h5 class="card-title">Anguissa</h5>
-                    <p class="card-text">Similitud: 96%</p>
+                    {% if row.porcentaje_similitud_jugador is None%}
+                        <img class="card-img-top" src="https://images.vexels.com/media/users/3/140748/isolated/preview/5b078a59390bb4666df98b49f1cdedd0-perfil-masculino-avatar-by-vexels.png" alt="Card image cap">
+                        <h5 class="card-title">Not found</h5>
+                        <p class="card-text">Similitud: 0%</p>
+                    {% else %}
+                        <img class="card-img-top" src="{{row.jugador_similiar.foto}}" alt="Card image cap">
+                        <h5 class="card-title">{{row.jugador_similiar.nombre}}</h5>
+                        <p class="card-text">Similitud: {{row.porcentaje_similitud_jugador}} %</p>
+                    {% endif %}
                 </div>
                 <h5 class="card-title">{{row.nombre}}</h5>
                 <hr>
-                <p class="card-text">Según las necesidades de tu equipo, recomendamos su fichaje en un 96%</p>
+                <p class="card-text">Según las necesidades de tu equipo, recomendamos su fichaje en un {{row.porcentaje_similitud_ideal}} %</p>
                 <a href="#" class="btn btn-info card-link-simil" onmouseout="no_mostrar_similar({{row.pk}});return false;" onmouseover="mostrar_similar({{row.pk}});return false;">Jugador Similar</a>
                 <a id="prueba" href="../jugador/show/{{row.pk}}" class="btn btn-info card-link-info ">Más Info</a>
             </div>
