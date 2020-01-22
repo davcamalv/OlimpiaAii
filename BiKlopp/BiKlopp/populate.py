@@ -88,7 +88,6 @@ def login(usuario, contrasena):
 def popular_jugadores(driver, alineacion=None):
     i = 0
     lista_jugadores = []
-    time.sleep(2)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "player-card")))
     jugadores = driver.find_elements_by_tag_name("player-card")
     urls = []
@@ -106,7 +105,6 @@ def popular_jugadores(driver, alineacion=None):
                 alineado = True
         
         driver.get(url)
-        time.sleep(2)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "icon.icon-stats")))
 
         page = BeautifulSoup(driver.page_source, "html5lib")
@@ -136,7 +134,6 @@ def popular_jugadores(driver, alineacion=None):
         media_puntos =  estadisticas[6].find("div", {"class": "stat main"}).find("span").getText().replace(",", ".")
         
         driver.get(url_completa_equipo)
-        time.sleep(2)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "icon.icon-team")))
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "stats")))
 
@@ -163,7 +160,6 @@ def popular_jugadores(driver, alineacion=None):
             nuevo_jugador = Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, alineacion=alineado, id_mercado=None)
             nuevo_jugador.save()
             lista_jugadores.append(nuevo_jugador)
-        time.sleep(2)
         i = i + 1
     return lista_jugadores
 

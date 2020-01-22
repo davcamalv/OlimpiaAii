@@ -1,0 +1,15 @@
+beautifulsoup4==4.8.0
+dateparser==0.7.2
+Django==2.2.6
+numpy==1.18.1
+python-dateutil==2.8.1
+pytz==2019.3
+regex==2020.1.8
+scipy==1.4.1
+selenium==3.141.0
+six==1.14.0
+soupsieve==1.9.5
+sqlparse==0.3.0
+tzlocal==2.0.0
+urllib3==1.25.8
+Whoosh==2.7.4
