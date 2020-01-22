@@ -8,6 +8,7 @@ from datetime import datetime,timedelta
 from scipy.stats.stats import pearsonr
 import pytz
 
+
 def index(request):
     return render(request, "index.html")
 
@@ -75,6 +76,8 @@ def actualizar_recomendacion_plantilla():
             jugador_mercado.save()
 
 
+
+
 def jugador_to_list(jugador_objeto):
     jugador = []
     puntos = []
@@ -86,3 +89,39 @@ def jugador_to_list(jugador_objeto):
     jugador.extend(puntos)
     jugador.append(jugador_objeto.media_puntos)
     return jugador
+
+def actualizar_jugador_necesario():
+    mercado = Mercado.objects.get(pk=Mercado.objects.all()[0].pk)
+    jugadores_mercado = Jugador.objects.all().filter(id_mercado=mercado)
+    for jugador_mercado in jugadores_mercado:
+        if "Lesionado" not in jugador_mercado.forma:
+            puntos_jugador_mercado = puntos_to_array(jugador_mercado.ultimos_puntos)
+            jugadores_alineacion = Jugador.objects.all().filter(alineacion=True, posicion= jugador_mercado.posicion)
+            for jugador_alineacion in jugadores_alineacion:
+                sum_simple = 0
+                multipliers = [1.7, 1.55, 1.40, 1.2, 1]
+                similitudes = []
+                puntos_jugador_alineacion = puntos_to_array(jugador_alineacion.ultimos_puntos)
+                for i in range(len(puntos_jugador_alineacion)):
+                    sum_simple = sum_simple + (puntos_jugador_mercado[i] - puntos_jugador_alineacion[i])*multipliers[i]
+                similitudes.append(sum_simple)
+            similitud_max =  max(similitudes)
+            if similitud_max <= 0.0:
+                jugador_mercado.porcentaje_similitud_ideal = 0
+            elif similitud_max >= 30:
+                jugador_mercado.porcentaje_similitud_ideal = 100
+            else:
+                jugador_mercado.porcentaje_similitud_ideal = round(similitud_max / 30 * 100,2)
+        else:
+            jugador_mercado.porcentaje_similitud_ideal = 0
+        jugador_mercado.save()
+        print(jugador_mercado.nombre, jugador_mercado.porcentaje_similitud_ideal)
+
+def puntos_to_array(puntos_string):
+    puntos = []
+    for puntito in puntos_string.replace("[", "").replace("]", "").replace("'", "").split(","):
+        try:
+            puntos.append(int(puntito))
+        except:
+            puntos.append(0)
+    return puntos
