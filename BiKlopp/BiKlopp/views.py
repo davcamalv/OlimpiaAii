@@ -1,13 +1,14 @@
-from BiKlopp.populate import popular_jugadores_mercado, populate_news
+from BiKlopp.populate import popular_jugadores_mercado, populate_news, popular_jugadores_mi_equipo
 from BiKlopp.models import Equipo, Jugador, Mercado
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from BiKlopp.news import filter_by_player_and_team, filter_by_team, filter_by_player
+from BiKlopp.news import filter_by_player_and_team, filter_by_team, filter_by_player_or_team
+from datetime import datetime, date, time, timedelta
+import calendar
 
-def popularJugadoresMercado(request):
-    popular_jugadores_mercado("dcamalv@gmail.com", "contraseña")
-    return HttpResponseRedirect('/admin/')
+def popular_noticias(request):
+    populate_news()
 
 def popular_noticias(request):
     populate_news()
@@ -18,10 +19,24 @@ def index(request):
 def recomendar(request):
     correo = request.POST['correo']
     contrasenya = request.POST['contrasenya']
-    #actualizar_info = request.POST['actualizar_info']
-    #TODO popular_jugadores_mercado(correo, contrasenya, actualizar_info)
-    #popular_jugadores_mercado(correo, contrasenya)
-    #TODO popular_jugadores_mi_equipo(correo, contrasenya)
+    actualizar_info = request.POST['actualizar_info']
+
+    if actualizar_info:
+
+        popular_jugadores_mercado(correo, contrasenya)
+        popular_jugadores_mi_equipo(correo, contrasenya)
+
+    elif len(Mercado.objects.all()) == 0:
+
+        popular_jugadores_mercado(correo, contrasenya)
+    else:
+
+        mercado = Mercado.objects.all()[0]
+        
+        if mercado.ultima_fecha_actualizacion < (date.today() - timedelta(days=1)):
+            popular_jugadores_mercado(correo, contrasenya)
+        
+
     #TODO algoritmo_recomendacion()
     jugadores = Jugador.objects.all() #Provisional: Se sustituyen por los jugadores recomendados
     #Todo solucionar lo de las URL

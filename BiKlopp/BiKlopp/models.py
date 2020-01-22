@@ -55,7 +55,11 @@ class Jugador(models.Model):
     id_equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, blank=True, null=True)
     id_mi_equipo = models.ForeignKey(MiEquipo, on_delete=models.CASCADE, blank=True, null=True)
     id_mercado = models.ForeignKey(Mercado, on_delete=models.CASCADE, blank=True, null=True)
-
+    porcentaje_similitud_ideal = models.FloatField(blank=True, null=True)
+    porcentaje_similitud_jugador = models.FloatField(blank=True, null=True)
+    jugador_similiar = models.ForeignKey("self", on_delete=models.CASCADE, blank=True, null=True)
+    alineacion = models.BooleanField(default=False)
+    
     def __str__(self):
         return self.nombre
 
