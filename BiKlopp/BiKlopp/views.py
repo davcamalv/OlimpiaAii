@@ -3,15 +3,9 @@ from BiKlopp.models import Equipo, Jugador, Mercado
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from BiKlopp.news import filter_by_player_and_team, filter_by_team, filter_by_player_or_team
+from BiKlopp.news import filter_by_player_and_team, filter_by_team, filter_by_player
 from datetime import datetime, date, time, timedelta
 import calendar
-
-def popular_noticias(request):
-    populate_news()
-
-def popular_noticias(request):
-    populate_news()
 
 def index(request):
     return render(request, "index.html")
