@@ -11,8 +11,7 @@ def index(request):
 def recomendar(request):
     correo = request.POST['correo']
     contrasenya = request.POST['contrasenya']
-    actualizar_info = request.POST['actualizar_info']
-
+    actualizar_info = request.POST.get('actualizar_info', False)
     if actualizar_info:
 
         popular_jugadores_mercado(correo, contrasenya)
@@ -24,8 +23,8 @@ def recomendar(request):
     else:
 
         mercado = Mercado.objects.all()[0]
-        
-        if mercado.ultima_fecha_actualizacion < (date.today() - timedelta(days=1)):
+        utc=pytz.UTC
+        if mercado.ultima_fecha_actualizacion < utc.localize((datetime.now() - timedelta(days=1))):
             popular_jugadores_mercado(correo, contrasenya)
         
 
