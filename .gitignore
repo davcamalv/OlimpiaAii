@@ -1,5 +1,9 @@
 BiKlopp/.idea
-BiKlopp/BiKlopp/__pycache__
+/BiKlopp/BiKlopp/__pycache__/
+/BiKlopp/BiKlopp/migrations/
+BiKlopp/__init__.py
+BiKlopp/BiKlopp/__pycache__/
+BiKlopp/BiKlopp/migrations/
 BiKlopp/BiKlopp/__init__.py
 BiKlopp/BiKlopp/wsgi.py
 BiKlopp/db.sqlite3
