@@ -25,25 +25,29 @@
               <h5 class="card-title">Noticias</h5>
               <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Por Jugador</a>
+                    <a class="nav-link active" href="news/filter_by_player">Por Jugador</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Por Equipo</a>
+                    <a class="nav-link" href="news/filter_by_team">Por Equipo</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Por Jugador y Equipo</a>
+                    <a class="nav-link" href="news/filter_by_player_and_team">Por Jugador y Equipo</a>
                 </li>
                 </ul>
             </div>
+            {%  for row in noticias %}
             <div class="card-body">
                   <div class="card card-notice">
-                    <img class="card-img-top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf_-k6IGCEsFuehZq3kiHT6OdCFd8yYQXgmZaabW4idZaVIEP1ghC9E94g2-vpfdUE5fXvo6E&s" alt="Card image cap">
+                    <!--<img class="card-img-top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf_-k6IGCEsFuehZq3kiHT6OdCFd8yYQXgmZaabW4idZaVIEP1ghC9E94g2-vpfdUE5fXvo6E&s" alt="Card image cap">-->
                     <div class="card-body card-notice-body">
-                      <h5 class="card-title">Noticia 1</h5>
-                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        <h5 class="card-title">{{row.titulo}}</h5>
+                        <p class="card-text">{{row.desc}}</p>
+                        <a class="card-link" href="{{row.link}}" target="_blank" >Link a la noticia en {{row.periodico}}</a>
+                        <footer style="float: right;" class="blockquote-footer"><cite title="Source Title">{{row.fecha}}</cite></footer>
                     </div>
                   </div>
             </div>
+            {% endfor %}
         </div>
 
     <style>
@@ -76,7 +80,7 @@
 
         .card-notice > .card-img-top{
             float: left;
-            width: 25%;
+            width: 30%;
         }
 
         .card-notice-body{

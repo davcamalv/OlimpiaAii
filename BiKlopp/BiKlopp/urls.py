@@ -21,5 +21,9 @@ urlpatterns = [
     path('', views.index),
     path('recomendar/', views.recomendar),
     path('popular-jugadores-mercado/', views.popularJugadoresMercado),
+    path('popular-noticias/', views.popular_noticias),
     path('jugador/show/<int:player_id>/', views.mostrar_info_jugador),
+    path('news/filter_by_player', views.news_filter_by_player),
+    path('news/filter_by_team', views.news_filter_by_team),
+    path('news/filter_by_player_and_team"', views.news_filter_by_player_and_team),
 ]
