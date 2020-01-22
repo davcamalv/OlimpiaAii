@@ -32,6 +32,8 @@ def popular_jugadores_mercado(driver):
         mercado = Mercado()
         mercado.save()   
     
+    Jugador.objects.filter(id_mercado=Mercado.objects.get(pk=mercado.pk)).delete()
+
     for jugador in jugadores:
         jugador.id_mercado = Mercado.objects.get(pk=mercado.pk)
         jugador.save()
@@ -155,10 +157,10 @@ def popular_jugadores(driver, alineacion=None):
 
         jugadores_bd =  Jugador.objects.filter(nombre=nombre)
         if len(jugadores_bd) > 0:
-           Jugador.objects.filter(pk=jugadores_bd[0].pk).update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, alineacion=alineado)
+           Jugador.objects.filter(pk=jugadores_bd[0].pk).update(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, alineacion=alineado, id_mercado=None)
            lista_jugadores.append(Jugador.objects.get(pk=jugadores_bd[0].pk))
         else:
-            nuevo_jugador = Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, alineacion=alineado)
+            nuevo_jugador = Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, alineacion=alineado, id_mercado=None)
             nuevo_jugador.save()
             lista_jugadores.append(nuevo_jugador)
 
