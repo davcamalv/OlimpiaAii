@@ -24,12 +24,15 @@ def recomendar(request):
             return render(request, "index.html", {"error": "El usuario o la contraseña no son correctos"})
         popular_jugadores_mercado(driver)
         popular_jugadores_mi_equipo(driver)
+        driver.quit()
     elif len(Mercado.objects.all()) == 0:
         try:
             driver = login(correo, contrasenya)
         except:
             return render(request, "index.html", {"error": "El usuario o la contraseña no son correctos"})
         popular_jugadores_mercado(driver)
+        popular_jugadores_mi_equipo(driver)
+        driver.quit()
     else:
 
         mercado = Mercado.objects.all()[0]
@@ -40,8 +43,11 @@ def recomendar(request):
             except:
                 return render(request, "index.html", {"error": "El usuario o la contraseña no son correctos"})
             popular_jugadores_mercado(driver)
+            driver.quit()
 
+    
     actualizar_recomendacion_plantilla()
+    actualizar_jugador_necesario()
     mercado = Mercado.objects.get(pk=Mercado.objects.all()[0].pk)
     jugadores = Jugador.objects.all().filter(id_mercado=mercado)
     #Todo solucionar lo de las URL
@@ -125,3 +131,4 @@ def puntos_to_array(puntos_string):
         except:
             puntos.append(0)
     return puntos
+
