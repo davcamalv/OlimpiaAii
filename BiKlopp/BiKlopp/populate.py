@@ -26,8 +26,7 @@ options = Options()
 options.add_argument('--headless')
 options.add_argument('--disable-gpu')
 
-def popular_jugadores_mercado(usuario, contrasena):
-    driver = login(usuario,contrasena)
+def popular_jugadores_mercado(driver):
 
     driver.get('https://biwenger.as.com/market')
 
@@ -47,8 +46,7 @@ def popular_jugadores_mercado(usuario, contrasena):
 
     driver.quit()
 
-def popular_jugadores_mi_equipo(usuario, contrasena):
-    driver = login(usuario,contrasena)
+def popular_jugadores_mi_equipo(driver):
 
     driver.get('https://biwenger.as.com/team')
 

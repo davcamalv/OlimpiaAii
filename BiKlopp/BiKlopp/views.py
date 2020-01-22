@@ -1,4 +1,4 @@
-from BiKlopp.populate import popular_jugadores_mercado, populate_news, popular_jugadores_mi_equipo
+from BiKlopp.populate import popular_jugadores_mercado, populate_news, popular_jugadores_mi_equipo, login
 from BiKlopp.models import Equipo, Jugador, Mercado
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
@@ -16,19 +16,29 @@ def recomendar(request):
     contrasenya = request.POST['contrasenya']
     actualizar_info = request.POST.get('actualizar_info', False)
     if actualizar_info:
-
-        popular_jugadores_mercado(correo, contrasenya)
-        popular_jugadores_mi_equipo(correo, contrasenya)
+        try:
+            driver = login(correo, contrasenya)
+        except:
+            return render(request, "index.html", {"error": "El usuario o la contraseña no son correctos"})
+        popular_jugadores_mercado(driver)
+        popular_jugadores_mi_equipo(driver)
 
     elif len(Mercado.objects.all()) == 0:
-
-        popular_jugadores_mercado(correo, contrasenya)
+        try:
+            driver = login(correo, contrasenya)
+        except:
+            return render(request, "index.html", {"error": "El usuario o la contraseña no son correctos"})
+        popular_jugadores_mercado(driver)
     else:
 
         mercado = Mercado.objects.all()[0]
         utc=pytz.UTC
         if mercado.ultima_fecha_actualizacion < utc.localize((datetime.now() - timedelta(days=1))):
-            popular_jugadores_mercado(correo, contrasenya)
+            try:
+                driver = login(correo, contrasenya)
+            except:
+                return render(request, "index.html", {"error": "El usuario o la contraseña no son correctos"})
+            popular_jugadores_mercado(driver)
         
 
     #TODO algoritmo_recomendacion()
