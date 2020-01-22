@@ -18,6 +18,9 @@ from whoosh.qparser import MultifieldParser
 from whoosh import query
 from whoosh.query import And, Term
 import dateparser
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 options = Options()
 options.add_argument('--headless')
@@ -27,9 +30,6 @@ def popular_jugadores_mercado(usuario, contrasena):
     driver = login(usuario,contrasena)
 
     driver.get('https://biwenger.as.com/market')
-
-    # Espera para cargar el mercado y poder acceder a los jugadores
-    time.sleep(3)
 
     jugadores = popular_jugadores(driver)
     
@@ -51,9 +51,8 @@ def popular_jugadores_mi_equipo(usuario, contrasena):
     driver = login(usuario,contrasena)
 
     driver.get('https://biwenger.as.com/team')
-    # Espera para cargar el mercado y poder acceder a los jugadores
-    time.sleep(3)
 
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "user-link")))
     nombre_mi_equipo = driver.find_element_by_tag_name("user-link").find_element_by_tag_name("a").text
 
     urls_alineacion =  driver.find_element_by_class_name("field.football").find_elements_by_tag_name("a")
@@ -91,15 +90,14 @@ def login(usuario, contrasena):
     password.send_keys(contrasena)
 
     driver.find_element_by_class_name('btn.squared.success').click()
-
-    # Espera para completar el logeo y poder acceder al mercado
-    time.sleep(3)
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "nav-market")))
 
     return driver
 
 def popular_jugadores(driver, alineacion=None):
     i = 0
     lista_jugadores = []
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "player-card")))
     jugadores = driver.find_elements_by_tag_name("player-card")
     urls = []
     for jugador in jugadores:
@@ -117,8 +115,7 @@ def popular_jugadores(driver, alineacion=None):
         
         driver.get(url)
 
-        # Espera para cargar el jugador y poder extraer los datos
-        time.sleep(3)
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "icon.icon-stats")))
 
         page = BeautifulSoup(driver.page_source, "html5lib")
 
@@ -147,8 +144,9 @@ def popular_jugadores(driver, alineacion=None):
         media_puntos =  estadisticas[6].find("div", {"class": "stat main"}).find("span").getText().replace(",", ".")
         
         driver.get(url_completa_equipo)
-        # Espera para cargar el equipo y poder extraer los datos
-        time.sleep(3)
+
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "icon.icon-team")))
+
         page = BeautifulSoup(driver.page_source, "html5lib")
 
         estadisticas = page.find("div",{"class": "stats"}).findAll("div", {"class": "row"})
