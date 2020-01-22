@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import re
 import os
+import time
 from BiKlopp.models import Equipo, Jugador, Mercado, MiEquipo
 
 from urllib.parse import quote_plus
@@ -19,14 +20,14 @@ options.add_argument('--headless')
 options.add_argument('--disable-gpu')
 
 def popular_jugadores_mercado(driver):
-
+    
     driver.get('https://biwenger.as.com/market')
 
     jugadores = popular_jugadores(driver)
     
     mercados = Mercado.objects.all()
     if len(mercados) > 0:
-        Mercado.objects.filter(pk=mercados[0].pk).update()
+        Mercado.objects.get(pk=mercados[0].pk).save(force_update=True)
         mercado = Mercado.objects.get(pk=mercados[0].pk)
     else:
         mercado = Mercado()
@@ -37,8 +38,6 @@ def popular_jugadores_mercado(driver):
     for jugador in jugadores:
         jugador.id_mercado = Mercado.objects.get(pk=mercado.pk)
         jugador.save()
-
-    driver.quit()
 
 def popular_jugadores_mi_equipo(driver):
 
@@ -64,7 +63,6 @@ def popular_jugadores_mi_equipo(driver):
     for jugador in jugadores:
         jugador.id_mi_equipo = MiEquipo.objects.get(pk=mi_equipo.pk)
         jugador.save()
-    driver.quit()
     
 def login(usuario, contrasena):
     path = os.getcwd()
@@ -83,12 +81,14 @@ def login(usuario, contrasena):
 
     driver.find_element_by_class_name('btn.squared.success').click()
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "nav-market")))
+    
 
     return driver
 
 def popular_jugadores(driver, alineacion=None):
     i = 0
     lista_jugadores = []
+    time.sleep(2)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "player-card")))
     jugadores = driver.find_elements_by_tag_name("player-card")
     urls = []
@@ -106,7 +106,7 @@ def popular_jugadores(driver, alineacion=None):
                 alineado = True
         
         driver.get(url)
-
+        time.sleep(2)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "icon.icon-stats")))
 
         page = BeautifulSoup(driver.page_source, "html5lib")
@@ -136,7 +136,7 @@ def popular_jugadores(driver, alineacion=None):
         media_puntos =  estadisticas[6].find("div", {"class": "stat main"}).find("span").getText().replace(",", ".")
         
         driver.get(url_completa_equipo)
-
+        time.sleep(2)
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "icon.icon-team")))
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "stats")))
 
@@ -163,7 +163,7 @@ def popular_jugadores(driver, alineacion=None):
             nuevo_jugador = Jugador(nombre=nombre,foto=foto, posicion= posicion, forma=forma_fisica, ultimos_puntos=puntos, puntos_totales=int(puntos_totales), valor_mercado=int(valor), partidos_jugados=int(partidos_jugados), goles=int(goles), tarjetas=int(tarjetas), media_puntos=float(media_puntos), id_equipo=equipo, alineacion=alineado, id_mercado=None)
             nuevo_jugador.save()
             lista_jugadores.append(nuevo_jugador)
-
+        time.sleep(2)
         i = i + 1
     return lista_jugadores
 
