@@ -36,7 +36,7 @@ def popular_jugadores_mercado(usuario, contrasena):
     mercados = Mercado.objects.all()
     if len(mercados) > 0:
         Mercado.objects.filter(pk=mercados[0].pk).update()
-        mercado = Mercado.objects.filter(pk=mercados[0].pk)
+        mercado = Mercado.objects.get(pk=mercados[0].pk)
     else:
         mercado = Mercado()
         mercado.save()   
@@ -62,7 +62,7 @@ def popular_jugadores_mi_equipo(usuario, contrasena):
     mis_equipos = MiEquipo.objects.filter(nombre=nombre_mi_equipo)
     if len(mis_equipos) > 0:
         MiEquipo.objects.filter(pk=mis_equipos[0].pk).update(nombre=nombre_mi_equipo)
-        mi_equipo = MiEquipo.objects.filter(pk=mis_equipos[0].pk)[0]
+        mi_equipo = MiEquipo.objects.get(pk=mis_equipos[0].pk)
     else:
         mi_equipo = MiEquipo(nombre=nombre_mi_equipo)
         mi_equipo.save()   
@@ -146,6 +146,7 @@ def popular_jugadores(driver, alineacion=None):
         driver.get(url_completa_equipo)
 
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "icon.icon-team")))
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "stats")))
 
         page = BeautifulSoup(driver.page_source, "html5lib")
 
