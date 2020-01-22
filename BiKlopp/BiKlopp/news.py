@@ -14,25 +14,33 @@ def filter_by_player_and_team():
     equipo = "betis"
     with ix.searcher() as buscador_noticias:
         q = And([Or([Term("titulo", str(equipo)), Term("desc", str(equipo))]), Or([Term("titulo", str(jugador)), Term("desc", str(jugador))])])
-        results = buscador_noticias.search(q, limit=None)
+        results_whoosh = buscador_noticias.search(q, limit=None)
+        results = []
+        for result_whoosh in results_whoosh:
+            results.append(result_whoosh.fields())
         return results
 
 def filter_by_team():
     ix=open_dir("Index_news")
     equipo = "betis"
+    res = {}
     with ix.searcher() as buscador_noticias:
         q = Or([Term("titulo", str(equipo)), Term("desc", str(equipo))])
-        results = buscador_noticias.search(q, limit=None)
+        results_whoosh = buscador_noticias.search(q, limit=None)
+        results = []
+        for result_whoosh in results_whoosh:
+            results.append(result_whoosh.fields())
         return results
 
-def filter_by_player_or_team():
+def filter_by_player():
     ix=open_dir("Index_news")
     jugador = "joaquín"
     equipo = "betis"
     with ix.searcher() as buscador_noticias:
-        q = Or([Or([Term("titulo", str(equipo)), Term("desc", str(equipo))]), Or([Term("titulo", str(jugador)), Term("desc", str(jugador))])])
-        results = buscador_noticias.search(q, limit=None)
-        for res in results:
-            print(res)
+        q = Or([Term("titulo", str(jugador)), Term("desc", str(jugador))])
+        results_whoosh = buscador_noticias.search(q, limit=None)
+        results = []
+        for result_whoosh in results_whoosh:
+            results.append(result_whoosh.fields())
         return results
 

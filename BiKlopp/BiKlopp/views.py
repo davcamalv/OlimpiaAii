@@ -10,6 +10,9 @@ import calendar
 def popular_noticias(request):
     populate_news()
 
+def popular_noticias(request):
+    populate_news()
+
 def index(request):
     return render(request, "index.html")
 
@@ -41,4 +44,23 @@ def recomendar(request):
 
 def mostrar_info_jugador(request, player_id):
     jugador = get_object_or_404(Jugador, pk=player_id)
-    return render(request, "mostrar_jugador.html", {"jugador": jugador})
+    populate_news()
+    noticias = filter_by_team()
+    for n in noticias:
+        print(n)
+    return render(request, "mostrar_jugador.html", {"jugador": jugador, "noticias":noticias})
+
+def news_filter_by_team(request, player_id):
+    jugador = get_object_or_404(Jugador, pk=player_id)
+    noticias = filter_by_team()
+    return render(request, "mostrar_jugador.html", {"jugador": jugador, "noticias": noticias})
+
+def news_filter_by_player(request, player_id):
+    jugador = get_object_or_404(Jugador, pk=player_id)
+    noticias = filter_by_player()
+    return render(request, "mostrar_jugador.html", {"jugador": jugador, "noticias": noticias})
+
+def news_filter_by_player_and_team(request, player_id):
+    jugador = get_object_or_404(Jugador, pk=player_id)
+    noticias = filter_by_player_and_team()
+    return render(request, "mostrar_jugador.html", {"jugador": jugador, "noticias": noticias})
