@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block content %}
+
+    <h3>¡Bienvenido a BiKlopp!</h3>
+    <hr>
+    <p style="width: 60%; margin-left: 5%">
+        Introduce tu email y tu contraseña de Biwenger y analizaremos los jugadores que hay en el mercado,
+        como se parecen a los de tu equipo y cuál te recomendamos fichar.
+    </p>
+    <br>
+    {%if error%}
+    <form method="post" action="" style="width: 50%; margin-left: 25%">
+    {% else %}
+    <form method="post" action="recomendar/" style="width: 50%; margin-left: 25%">
+    {% endif %}
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="exampleInputEmail1">Email</label>
+            <input name="correo" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="quiquesetien@hotmail.com">
+            <small id="emailHelp" class="form-text text-muted">No vamos a compartir estos datos</small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Contraseña</label>
+            <input name="contrasenya" type="password" class="form-control" id="exampleInputPassword1" placeholder="password">
+        </div>
+        <div class="form-check">
+            <input name="actualizar_info" type="checkbox" class="form-check-input" id="exampleCheck1">
+            <label class="form-check-label" for="exampleCheck1">¿Quieres actualizar toda la información?</label>
+            <small id="emailHelp" class="form-text text-muted">Esto puede llevar bastantes segundos más</small>
+            <br>
+        </div>
+        <button type="submit" class="btn btn-primary">Recomiendame!</button>
+    </form>
+    <br>
+
+    {%if error%}
+        <div class="alert alert-danger" role="alert">
+            {{error}}
+        </div>
+    {% endif %}
+
+{% endblock content %}
